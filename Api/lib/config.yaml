@@ -1,0 +1,5 @@
+engines:
+  {'right':"mysql://root:123456@127.0.0.1/permission?charset=utf8",
+   'kvm':"mysql://root:123456@127.0.0.1/webzcloud?charset=utf8",
+   'base':"mysql://root:123456@127.0.0.1/webzcloud?charset=utf8",
+   'projects':"mysql://root:123456@127.0.0.1/projects?charset=utf8"}

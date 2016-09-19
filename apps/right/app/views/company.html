@@ -1,0 +1,601 @@
+<div ng-show="!success">
+<font color="#FF0000">权限不足，无法操作!!!</font>
+</div>
+<div class="portlet box blue" ng-show="success">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>公司管理
+        </div>
+        <div class="tools">
+            <a class="glyphicon glyphicon-plus" href="javascript:;">
+            </a>
+            <button type="button" class="btn red-haze btn-sm" ng-click="Create();">新建公司
+            </button>
+        </div>
+    </div>
+
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <label>Filter:
+                    <input type="search" class="form-control input-large input-inline" placeholder="公司名称" ng-model='searchKey'>
+                </label>
+                <a href="javascript:void(0);" ng-click="Search(searchKey)" class="btn btn-sm btn-primary">搜索</a>
+                <a href="javascript:void(0);" ng-click="Search('')" class="btn btn-sm btn-primary">重置</a>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>公司ID</th>
+                <th>上级公司</th>
+                <th>公司名称</th>
+                <th>地址</th>
+                <th>公司性质</th>
+                <th>规模</th>
+                <th>电话</th>
+                <th>传真</th>
+                <th>创建人</th>
+                <th>创建时间</th>
+                <th>修改人</th>
+                <th>修改时间</th>
+                <th>管理</th>
+            </tr>
+
+            <tr ng-repeat="o in rows">
+                <td>{{ o.CompanyId }}</td>
+                <td>{{ o.ParentCompany }}</td>
+                <td>{{ o.CompanyName }}</td>
+                <td>{{ o.Address }}</td>
+                <td>{{ o.CompanyNature }}</td>
+                <td>{{ o.Scale }}</td>
+                <td>{{ o.TelePhone }}</td>
+                <td>{{ o.Fax }}</td>
+                <td>{{ o.Create }}</td>
+                <td>{{ o.CreateTime }}</td>
+                <td>{{ o.Update }}</td>
+                <td>{{ o.UpdateTime }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="detailcompany($index)">查看</button>
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript:;" ng-click="editcompany($index)">修改公司</a></li>
+                            <li><a href="javascript:;" ng-click="deletecompany($index)">删除公司</a></li>
+                        </ul>
+
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging
+                class="small"
+                page="currentPage"
+                page-size="pageSize"
+                total="total"
+                adjacent="{{adjacent}}"
+                dots="{{dots}}"
+                scroll-top="{{scrollTop}}"
+                hide-if-empty="{{hideIfEmpty}}"
+                ul-class="{{ulClass}}"
+                active-class="{{activeClass}}"
+                disabled-class="{{disabledClass}}"
+                show-prev-next="{{showPrevNext}}"
+                paging-action="pageAction( page )">
+        </paging>
+    </div>
+</div>
+
+<script type="text/ng-template" id="add.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="alert {{alert.type}}">
+        <span>{{alert.message}} </span>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form" name="createForm">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">上级公司
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="上级公司"
+                                       ng-model="item.ParentCompany">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司名称
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="公司名称"
+                                       ng-model="item.CompanyName">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">区域
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="区域"
+                                       ng-model="item.Area">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">地址
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-sm-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="公司地址"
+                                       ng-model="item.Address">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">行业
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="行业"
+                                       ng-model="item.Profession">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司性质
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="公司性质"
+                                       ng-model="item.CompanyNature">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">规模
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="规模"
+                                       ng-model="item.Scale">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">电话
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="tel"
+                                       class="form-control input-inline input-big" required placeholder="电话"
+                                       ng-model="item.TelePhone">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">传真
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="tel"
+                                       class="form-control input-inline input-big" required placeholder="传真"
+                                       ng-model="item.Fax">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">主页
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="url"
+                                       class="form-control input-inline input-big" required placeholder="主页"
+                                       ng-model="item.HomePage">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">是否有效
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <select class="form-control input-inline input-big" required
+                                        ng-model="item.Is_valid">
+                                    <option value="否">否</option>
+                                    <option value="是">是</option>
+                                </select>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">备注
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <textarea rows="3" class="form-control input-inline input-medium" required placeholder="备注"
+                                       ng-model="item.Comment"></textarea>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="Save()" ng-disabled="!createForm.$valid">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="editcompany.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="alert {{alert.type}}">
+        <span>{{alert.message}} </span>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form" name="createForm">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">上级公司
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="上级公司"
+                                       ng-model="item.ParentCompany">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司名称
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="公司名称"
+                                       ng-model="item.CompanyName" disabled>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">区域
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="区域"
+                                       ng-model="item.Area">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">地址
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-sm-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="公司地址"
+                                       ng-model="item.Address">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">行业
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="行业"
+                                       ng-model="item.Profession">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司性质
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="公司性质"
+                                       ng-model="item.CompanyNature">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">规模
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="text"
+                                       class="form-control input-inline input-big" required placeholder="规模"
+                                       ng-model="item.Scale">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">电话
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="tel"
+                                       class="form-control input-inline input-big" required placeholder="电话"
+                                       ng-model="item.TelePhone">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">传真
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="tel"
+                                       class="form-control input-inline input-big" required placeholder="传真"
+                                       ng-model="item.Fax">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">主页
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <input type="url"
+                                       class="form-control input-inline input-big" required placeholder="主页"
+                                       ng-model="item.HomePage">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">是否有效
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <select class="form-control input-inline input-big" required
+                                        ng-model="item.Is_valid">
+                                    <option value="否">否</option>
+                                    <option value="是">是</option>
+                                </select>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">备注
+                            <span class="redClassFont">*</span></label>
+                            <div class="col-md-4">
+                                <textarea rows="3" class="form-control input-inline input-medium" required placeholder="备注"
+                                       ng-model="item.Comment"></textarea>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="companyput()" ng-disabled="!createForm.$valid">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="detailcompany.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form" name="createForm">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">上级公司</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.ParentCompany}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司名称</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.CompanyName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">区域</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.Area}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司地址</label>
+                            <div class="col-sm-4">
+                                <p class="form-control-static">{{item.Address}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">行业</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.Profession}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司性质</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.CompanyNature}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">公司规模</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.Scale}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">电话</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.TelePhone}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">传真</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.Fax}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">主页</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.HomePage}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">备注</label>
+                            <div class="col-md-4">
+                                <p class="form-control-static">{{item.Comment}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="deletecompany.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="alert {{alert.type}}">
+        <span>{{alert.message}} </span>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                           确定要删除公司<font color="#FF0000" size="10">{{ item.CompanyName }}?</font>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="companydel()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div>
+</script>
